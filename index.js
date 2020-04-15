@@ -16,11 +16,18 @@ const cardPoint = card => {
 }
 
 const valueName = card => {
-    const v = value(card);
-    if(v < 9) {
-        return v+1;
+    const cardValue = value(card);
+    if(cardValue < 9) {
+        return cardValue+1;
     } else {
-        return ['Knäkt', 'Riddare', 'Kung'][v - 9];
+        switch (cardValue) {
+            case 9:
+                return "Knäkt";
+            case 10:
+                return "Riddare";
+            case 11:
+                return "Kung";
+        }
     }
 }
 
