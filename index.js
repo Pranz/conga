@@ -8,8 +8,8 @@ const suit = (card) => Math.floor(card / 12);
 const value = (card) => (card % 12);
 
 const cardPoint = card => {
-    if(v < 9) {
-        return v +1;
+    if(card < 9) {
+        return card +1;
     } else {
         return 10;
     }
