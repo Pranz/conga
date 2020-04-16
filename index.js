@@ -57,14 +57,22 @@ const initializeRound = (playerCount, playerScores, playerTurn) => {
         playerPhase: 'draw',
         roundClose: false,
         discardPile: [],
+        timesReshuffled: 0,
     };
 }
 
 const reshuffleDiscard = (round) => {
-    round.deck = round.discardPile;
-    shuffle(round.deck);
-    round.discardPile = [];
-    return round;
+    if (round.timesReshuffled >=3){
+        round.deck = round.discardPile;
+        shuffle(round.deck);
+        round.discardPile = [];
+        round.timesReshuffled += 1;
+        return round;
+    }
+    else{
+        round.roundClose = true;
+        return round;
+    }
 }
 
 const drawPhase = (round, pileToDrawFrom) => {
