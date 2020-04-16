@@ -99,7 +99,7 @@ const discardPhase = (round, cardIndexToDiscard, roundClose) => {
     return round;
 }
 
-const setIsValid = (cards) => {
+const isCombinationValid = (cards) => {
   if(cards.length < 3 || cards.length > 7) {
     return false;
   }
@@ -120,7 +120,7 @@ function isClosingPossible(hand){
     // NOT WORKING YET. Needs a powerset function.
     const powersetOfHand = powerSetFunction(hand).reverse;
     for (combination of powersetOfHand) {
-        if (setIsValid(combination)) {
+        if (isCombinationValid(combination)) {
             const newHand  = Object.assign({}, hand);
             const pointsOnHand = 0;
             newHand = removeCombinationFromHand(newHand, combination)
