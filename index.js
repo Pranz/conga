@@ -1,11 +1,7 @@
 
 const shuffle = require('shuffle-array');
 
-function makeCard(value, name, suit){
-	this.value = value;
-	this.name = name;
-	this.suit = suit;
-}
+const makeCard = (value, name, suit) => ({ value, name, suit });
 
 function makeDeck(){
 	this.names = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Knave', 'Cavalier', 'King'];
@@ -19,6 +15,25 @@ function makeDeck(){
     }
 
     return shuffle(cards);
+}
+
+const cardPoint = card => {
+    if(card.value < 10) {
+        return card.value;
+    } else {
+        return 10;
+    }
+}
+
+const displayCard = card => {
+    return `${card.suit} ${card.value}`;
+}
+
+const displayHand = hand => {
+    hand.forEach(card => {
+        console.log(displayCard(card))
+    })
+    console.log('');
 }
 
 const initializeRound = (playerCount, playerScores, playerTurn) => {
@@ -62,21 +77,26 @@ const drawPhase = (round, pileToDrawFrom) => {
     } else if (pileToDrawFrom === 'discard') {
         round.hands[playerTurn].push(round.discardPile.pop());
     }
+    return round;
 }
 
 const discardPhase = (round, cardIndexToDiscard, roundClose) => {
     const { playerTurn } = round;
     const cardToDiscard = round.hands[playerTurn][cardIndexToDiscard];
-    round.hands[playerTurn].remove(cardIndexToDiscard);
+    round.hands[playerTurn].splice(cardIndexToDiscard, 1);
     round.discardPile.push(cardToDiscard);
     round.roundClose = roundClose;
+    return round;
 }
 
 
 const round = initializeRound(2, [0,0]);
+console.log("Initial hand:")
 displayHand(round.hands[0]);
 const nextStep = drawPhase(round, 'deck');
+console.log("Hand after draw:")
 displayHand(nextStep.hands[0]);
 const nextNextStep = discardPhase(round, 3, false);
+console.log("Hand after discard:")
 displayHand(nextNextStep.hands[0]);
 
