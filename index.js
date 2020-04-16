@@ -1,11 +1,7 @@
 
 const shuffle = require('shuffle-array');
 
-function makeCard(value, name, suit){
-	this.value = value;
-	this.name = name;
-	this.suit = suit;
-}
+const makeCard = (value, name, suit) => ({ value, name, suit });
 
 function makeDeck(){
 	this.names = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Knave', 'Cavalier', 'King'];
@@ -14,11 +10,21 @@ function makeDeck(){
     
     for( var s = 0; s < this.suits.length; s++ ) {
         for( var n = 0; n < this.names.length; n++ ) {
-            cards.push( new card( n+1, this.names[n], this.suits[s] ) );
+            cards.push( makeCard( n+1, this.names[n], this.suits[s] ) );
         }
     }
 
     return shuffle(cards);
+}
+
+const displayCard = card => {
+    return `${card.suit} ${card.value}`;
+}
+
+const displayHand = hand => {
+    hand.forEach(card => {
+        console.log(displayCard(card))
+    })
 }
 
 const initializeRound = (playerCount, playerScores, playerTurn) => {
@@ -72,5 +78,5 @@ const discardPhase = (round, cardIndexToDiscard, roundClose) => {
 }
 
 
-displayHand(initializeRound(2, [0,0]).deck);
+displayHand(initializeRound(2, [0,0]).hands[0]);
 
