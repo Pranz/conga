@@ -1,53 +1,24 @@
 
 const shuffle = require('shuffle-array');
 
-const CARD_LIMIT = 48
-const SUIT_NAMES = ['Svärd', 'Klubba', 'Guld', 'Kopp']
-
-const suit = (card) => Math.floor(card / 12);
-const value = (card) => (card % 12);
-
-const cardPoint = card => {
-    if(card < 9) {
-        return card +1;
-    } else {
-        return 10;
-    }
+function makeCard(value, name, suit){
+	this.value = value;
+	this.name = name;
+	this.suit = suit;
 }
 
-const valueName = card => {
-    const cardValue = value(card);
-    if(cardValue < 9) {
-        return cardValue+1;
-    } else {
-        switch (cardValue) {
-            case 9:
-                return "Knäkt";
-            case 10:
-                return "Riddare";
-            case 11:
-                return "Kung";
+function makeDeck(){
+	this.names = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Knave', 'Cavalier', 'King'];
+	this.suits = ['Coins','Cups','Swords','Batons'];
+	var cards = [];
+    
+    for( var s = 0; s < this.suits.length; s++ ) {
+        for( var n = 0; n < this.names.length; n++ ) {
+            cards.push( new card( n+1, this.names[n], this.suits[s] ) );
         }
     }
-}
 
-const displayCard = card => {
-    return `${SUIT_NAMES[suit(card)]} ${valueName(card)}`;
-}
-
-const displayHand = hand => {
-    hand.forEach(card => {
-        console.log(displayCard(card))
-    })
-}
-
-const makeDeck = () => {
-    const deck = [];
-    for(var i = 0; i < CARD_LIMIT; i++) {
-        deck.push(i);
-    }
-    shuffle(deck);
-    return deck
+    return shuffle(cards);
 }
 
 const initializeRound = (playerCount, playerScores, playerTurn) => {
