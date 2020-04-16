@@ -116,7 +116,39 @@ const setIsValid = (cards) => {
   return false;
 }
 
-const checkSets = (hand) => {
+function isClosingPossible(hand){
+    // NOT WORKING YET. Needs a powerset function.
+    const powersetOfHand = powerSetFunction(hand).reverse;
+    for (combination of powersetOfHand) {
+        if (setIsValid(combination)) {
+            const newHand  = Object.assign({}, hand);
+            const pointsOnHand = 0;
+            newHand = removeCombinationFromHand(newHand, combination)
+
+            for (card of newHand) {
+                pointsOnHand += cardPoint(card);
+            }
+            if (pointsOnHand <=5) {
+                return true;
+            } else {
+                 if (isClosingPossible(newHand)) {
+                     return true;
+                 }
+            }
+        }
+    }
+    return false;
+}
+
+function removeCombinationFromHand(hand, combination) {
+    for (combinationCard of combination) {
+        for (handCard of hand) {
+            if (combinationCard === handCard) {
+                hand.splice(hand.indexOf(handCard), 1)
+            }
+        }
+    }
+    return hand
 }
 
 
