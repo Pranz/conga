@@ -14,7 +14,7 @@ function makeDeck(){
     
     for( var s = 0; s < this.suits.length; s++ ) {
         for( var n = 0; n < this.names.length; n++ ) {
-            cards.push( new card( n+1, this.names[n], this.suits[s] ) );
+            cards.push( makeCard( n+1, this.names[n], this.suits[s] ) );
         }
     }
 
@@ -38,7 +38,8 @@ const initializeRound = (playerCount, playerScores, playerTurn) => {
         playerScores,
         hands,
         deck,
-        playerTurn,
+        playerTurn: 0,
+        playerPhase: 'draw',
         roundClose: false,
         discardPile: [],
     };
@@ -72,5 +73,10 @@ const discardPhase = (round, cardIndexToDiscard, roundClose) => {
 }
 
 
-displayHand(initializeRound(2, [0,0]).deck);
+const round = initializeRound(2, [0,0]);
+displayHand(round.hands[0]);
+const nextStep = drawPhase(round, 'deck');
+displayHand(nextStep.hands[0]);
+const nextNextStep = discardPhase(round, 3, false);
+displayHand(nextNextStep.hands[0]);
 
