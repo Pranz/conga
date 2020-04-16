@@ -17,6 +17,14 @@ function makeDeck(){
     return shuffle(cards);
 }
 
+const cardPoint = card => {
+    if(card.value < 10) {
+        return card.value;
+    } else {
+        return 10;
+    }
+}
+
 const displayCard = card => {
     return `${card.suit} ${card.value}`;
 }
