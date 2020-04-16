@@ -7,14 +7,13 @@ function makeDeck(){
 	this.names = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Knave', 'Cavalier', 'King'];
 	this.suits = ['Coins','Cups','Swords','Batons'];
 	var cards = [];
-    
-    for( var s = 0; s < this.suits.length; s++ ) {
-        for( var n = 0; n < this.names.length; n++ ) {
-            cards.push( makeCard( n+1, this.names[n], this.suits[s] ) );
-        }
-    }
+  for( var s = 0; s < this.suits.length; s++ ) {
+      for( var n = 0; n < this.names.length; n++ ) {
+          cards.push( makeCard( n+1, this.names[n], this.suits[s] ) );
+      }
+  }
 
-    return shuffle(cards);
+  return shuffle(cards);
 }
 
 const cardPoint = card => {
@@ -42,7 +41,7 @@ const initializeRound = (playerCount, playerScores, playerTurn) => {
     for(var p = 0; p < playerCount; p++) {
         hands.push([]);
     }
-    
+
     for(var i = 0; i < 7; i++) {
         for(var p = 0; p < playerCount; p++) {
             hands[p].push(deck.pop());
@@ -98,6 +97,26 @@ const discardPhase = (round, cardIndexToDiscard, roundClose) => {
     round.playerPhase = 'draw';
     round.playerTurn = (round.playerTurn + 1) % round.playerCount;
     return round;
+}
+
+const setIsValid = (cards) => {
+  if(cards.length < 3 || cards.length > 7) {
+    return false;
+  }
+  const sameValue = cards.every(c => c.value === cards[0].value);
+  const sameSuit = cards.every(c => c.suit === cards[0].suit);
+  if(sameValue) return true;
+  if(sameSuit) {
+    const minVal = cards.reduce((acc, card) => Math.min(acc, card.value), cards[0].value);
+    const maxVal = cards.reduce((acc, card) => Math.max(acc, card.value), cards[0].value);
+    if ((maxVal - minVal) === (cards.length - 1)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+const checkSets = (hand) => {
 }
 
 
