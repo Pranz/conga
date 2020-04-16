@@ -85,6 +85,7 @@ const drawPhase = (round, pileToDrawFrom) => {
     } else if (pileToDrawFrom === 'discard') {
         round.hands[playerTurn].push(round.discardPile.pop());
     }
+    round.playerPhase = 'discard';
     return round;
 }
 
@@ -94,6 +95,8 @@ const discardPhase = (round, cardIndexToDiscard, roundClose) => {
     round.hands[playerTurn].splice(cardIndexToDiscard, 1);
     round.discardPile.push(cardToDiscard);
     round.roundClose = roundClose;
+    round.playerPhase = 'draw';
+    round.playerTurn = (round.playerTurn + 1) % round.playerCount;
     return round;
 }
 
@@ -108,3 +111,4 @@ const nextNextStep = discardPhase(round, 3, false);
 console.log("Hand after discard:")
 displayHand(nextNextStep.hands[0]);
 
+module.exports = { initializeRound, drawPhase, discardPhase };
