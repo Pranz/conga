@@ -17,86 +17,86 @@ function makeDeck(){
 }
 
 const cardPoint = card => {
-    if(card.value < 10) {
-        return card.value;
-    } else {
-        return 10;
-    }
+  if(card.value < 10) {
+    return card.value;
+  } else {
+    return 10;
+  }
 }
 
 const displayCard = card => {
-    return `${card.suit} ${card.value}`;
+  return `${card.suit} ${card.value}`;
 }
 
 const displayHand = hand => {
-    hand.forEach(card => {
-        console.log(displayCard(card))
-    })
-    console.log('');
+  hand.forEach(card => {
+    console.log(displayCard(card))
+  })
+  console.log('');
 }
 
 const initializeRound = (playerCount, playerScores, playerTurn) => {
-    const deck = makeDeck();
-    const hands = [];
-    for(var p = 0; p < playerCount; p++) {
-        hands.push([]);
-    }
+  const deck = makeDeck();
+  const hands = [];
+  for(var p = 0; p < playerCount; p++) {
+    hands.push([]);
+  }
 
-    for(var i = 0; i < 7; i++) {
-        for(var p = 0; p < playerCount; p++) {
-            hands[p].push(deck.pop());
-        }
+  for(var i = 0; i < 7; i++) {
+    for(var p = 0; p < playerCount; p++) {
+      hands[p].push(deck.pop());
     }
-    return {
-        playerCount,
-        playerScores,
-        hands,
-        deck,
-        playerTurn: 0,
-        playerPhase: 'draw',
-        roundClose: false,
-        discardPile: [],
-        timesReshuffled: 0,
-    };
+  }
+  return {
+    playerCount,
+    playerScores,
+    hands,
+    deck,
+    playerTurn: 0,
+    playerPhase: 'draw',
+    roundClose: false,
+    discardPile: [],
+    timesReshuffled: 0,
+  };
 }
 
 const reshuffleDiscard = (round) => {
-    if (round.timesReshuffled >=3){
-        round.deck = round.discardPile;
-        shuffle(round.deck);
-        round.discardPile = [];
-        round.timesReshuffled += 1;
-        return round;
-    }
-    else{
-        round.roundClose = true;
-        return round;
-    }
+  if (round.timesReshuffled >=3){
+    round.deck = round.discardPile;
+    shuffle(round.deck);
+    round.discardPile = [];
+    round.timesReshuffled += 1;
+    return round;
+  }
+  else{
+    round.roundClose = true;
+    return round;
+  }
 }
 
 const drawPhase = (round, pileToDrawFrom) => {
-    const { playerTurn } = round;
-    if(pileToDrawFrom === 'deck' || round.discardPile.length === 0) {
-        if(round.deck.length === 0) {
-            reshuffleDiscard(round);
-        }
-        round.hands[playerTurn].push(round.deck.pop())
-    } else if (pileToDrawFrom === 'discard') {
-        round.hands[playerTurn].push(round.discardPile.pop());
+  const { playerTurn } = round;
+  if(pileToDrawFrom === 'deck' || round.discardPile.length === 0) {
+    if(round.deck.length === 0) {
+      reshuffleDiscard(round);
     }
-    round.playerPhase = 'discard';
-    return round;
+    round.hands[playerTurn].push(round.deck.pop())
+  } else if (pileToDrawFrom === 'discard') {
+    round.hands[playerTurn].push(round.discardPile.pop());
+  }
+  round.playerPhase = 'discard';
+  return round;
 }
 
 const discardPhase = (round, cardIndexToDiscard, roundClose) => {
-    const { playerTurn } = round;
-    const cardToDiscard = round.hands[playerTurn][cardIndexToDiscard];
-    round.hands[playerTurn].splice(cardIndexToDiscard, 1);
-    round.discardPile.push(cardToDiscard);
-    round.roundClose = roundClose;
-    round.playerPhase = 'draw';
-    round.playerTurn = (round.playerTurn + 1) % round.playerCount;
-    return round;
+  const { playerTurn } = round;
+  const cardToDiscard = round.hands[playerTurn][cardIndexToDiscard];
+  round.hands[playerTurn].splice(cardIndexToDiscard, 1);
+  round.discardPile.push(cardToDiscard);
+  round.roundClose = roundClose;
+  round.playerPhase = 'draw';
+  round.playerTurn = (round.playerTurn + 1) % round.playerCount;
+  return round;
 }
 
 const isCombinationValid = (cards) => {
@@ -116,50 +116,56 @@ const isCombinationValid = (cards) => {
   return false;
 }
 
-function isClosingPossible(hand){
-    // NOT WORKING YET. Needs a powerset function.
-    const powersetOfHand = powerSetFunction(hand).reverse;
-    for (combination of powersetOfHand) {
-        if (isCombinationValid(combination)) {
-            const newHand  = Object.assign({}, hand);
-            const pointsOnHand = 0;
-            newHand = removeCombinationFromHand(newHand, combination)
+function powerSet(set) {
+  if(set.length === 0) {
+    return [[]]
+  }
+  const copy = set.slice();
+  const removedElem = copy.pop();
+  const sets = [];
+  for(s of powerSet(copy)) {
+    const s2 = s.slice();
+    s2.push(removedElem);
+    sets.push(s2);
+    sets.push(s);
+  }
+  return sets.sort((a,b) => b.length - a.length);
+}
 
-            for (card of newHand) {
-                pointsOnHand += cardPoint(card);
-            }
-            if (pointsOnHand <=5) {
-                return true;
-            } else {
-                 if (isClosingPossible(newHand)) {
-                     return true;
-                 }
-            }
+function isClosingPossible(hand){
+  // NOT WORKING YET. Needs a powerset function.
+  const powersetOfHand = powerSet(hand);
+  for (combination of powersetOfHand) {
+    if (isCombinationValid(combination)) {
+      const newHand  = hand.slice()
+      let pointsOnHand = 0;
+      removeCombinationFromHand(newHand, combination)
+
+      for (card of newHand) {
+        pointsOnHand += cardPoint(card);
+      }
+      if (pointsOnHand <=5) {
+        return true;
+      } else {
+        if (isClosingPossible(newHand)) {
+          return true;
         }
+      }
     }
-    return false;
+  }
+  return false;
 }
 
 function removeCombinationFromHand(hand, combination) {
-    for (combinationCard of combination) {
-        for (handCard of hand) {
-            if (combinationCard === handCard) {
-                hand.splice(hand.indexOf(handCard), 1)
-            }
-        }
+  for (combinationCard of combination) {
+    for (handCard of hand) {
+      if (combinationCard === handCard) {
+        hand.splice(hand.indexOf(handCard), 1)
+      }
     }
-    return hand
+  }
+  return hand
 }
 
 
-const round = initializeRound(2, [0,0]);
-console.log("Initial hand:")
-displayHand(round.hands[0]);
-const nextStep = drawPhase(round, 'deck');
-console.log("Hand after draw:")
-displayHand(nextStep.hands[0]);
-const nextNextStep = discardPhase(round, 3, false);
-console.log("Hand after discard:")
-displayHand(nextNextStep.hands[0]);
-
-module.exports = { initializeRound, drawPhase, discardPhase };
+console.log(powerSet(['a', 'b', 'c', 'd', 'e', 'f', 'g']));
