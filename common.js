@@ -169,3 +169,8 @@ function removeCombinationFromHand(hand, combination) {
 
 
 console.log(powerSet(['a', 'b', 'c', 'd', 'e', 'f', 'g']));
+const exampleHand = [
+  {suit: 'A', value: '3'},
+  {suit: 'A', value: '4'},
+  {suit: 'A', value: '5'}
+];
