@@ -158,6 +158,7 @@ function isClosingPossible(hand){
 function removeCombinationFromHand(hand, combination) {
   for (combinationCard of combination) {
     for (handCard of hand) {
+      // So that we can check different objects with the same values
       if(combinationCard.value === handCard.value && combinationCard.suit === handCard.suit) {
         hand.splice(hand.indexOf(handCard), 1)
       }
