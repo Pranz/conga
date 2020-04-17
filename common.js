@@ -133,7 +133,6 @@ function powerSet(set) {
 }
 
 function isClosingPossible(hand){
-  // NOT WORKING YET. Needs a powerset function.
   const powersetOfHand = powerSet(hand);
   for (combination of powersetOfHand) {
     if (isCombinationValid(combination)) {
@@ -159,18 +158,10 @@ function isClosingPossible(hand){
 function removeCombinationFromHand(hand, combination) {
   for (combinationCard of combination) {
     for (handCard of hand) {
-      if (combinationCard === handCard) {
+      if(combinationCard.value === handCard.value && combinationCard.suit === handCard.suit) {
         hand.splice(hand.indexOf(handCard), 1)
       }
     }
   }
   return hand
 }
-
-
-console.log(powerSet(['a', 'b', 'c', 'd', 'e', 'f', 'g']));
-const exampleHand = [
-  {suit: 'A', value: '3'},
-  {suit: 'A', value: '4'},
-  {suit: 'A', value: '5'}
-];
