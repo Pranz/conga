@@ -57,6 +57,7 @@ const initializeRound = (playerCount, playerScores, playerTurn) => {
     roundClose: false,
     discardPile: [],
     timesReshuffled: 0,
+    combinationsOnTable: [],
   };
 }
 
@@ -166,3 +167,14 @@ function removeCombinationFromHand(hand, combination) {
   }
   return hand
 }
+
+function cardCombinationPhase(round, combination) {
+  // Removes combination from player hand and puts chosen combination on the table
+  const playerHand = round.hand[round.playerTurn];
+
+  if (isCombinationValid(combination)) {
+    removeCombinationFromHand(playerHand, combination);
+    round.combinationsOnTable[round.playerTurn].push(combination)
+    return playerHand
+  } 
+} 
